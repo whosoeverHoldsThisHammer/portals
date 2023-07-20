@@ -5,15 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind-build": "npx tailwindcss -i ./src/tailwind.css -o ./public/tailwind.css",
     "start": "webpack ./src/index.js --output-path ./bin --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.4",
     "mithril": "^2.2.2"
   },
   "devDependencies": {
+    "tailwindcss": "^3.3.3",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   }
