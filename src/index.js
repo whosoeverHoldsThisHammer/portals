@@ -1,8 +1,8 @@
+import createPortal from "./factory"
 var m = require("mithril")
 
 const portals = {
     stacked: [],
-    freeRoaming: [],
     anchored: []
 }
 
@@ -10,55 +10,23 @@ const anchor = id => {
     let element = portals.stacked[id]
     portals.stacked.splice(id, 1)
     portals.anchored.push(element)
-    m.mount(document.getElementById("anchors"), footer)
 }
 
 const expand = id => {
     let element = portals.anchored[id]
     portals.anchored.splice(id, 1)
     portals.stacked.push(element)
-    m.mount(document.getElementById("anchors"), footer)
 }
 
 const button = () => {
     return m("button", {
         "class": "rounded-md bg-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
         "type": "button",
-        onclick: () => initialize(
-            {
-                id: portals.stacked.length + 1,
-                title: "Portal",
-                content: "Portal content"
-            },
-        )
+        onclick: () => initialize(createPortal(portals.stacked.length + 1, "Portal", "Portal content"))
     },
         "Open New Portal"
     )
 }
-
-const topLevel = {
-    view: function (vnode) {
-        return m("div", { "class": "absolute top left w-full" }, [
-            portals.stacked.map((element, i) => {
-                return m(nonModalWindow, { content: element, idx: i })
-            })
-        ])
-    }
-}
-
-const footer = {
-    view: function (vnode) {
-        return m("div", { "class": "absolute bottom-0 left-0 w-full" }, [
-            m("div", { "class": "p-4 flex items-center space-x-4" }, [
-                portals.anchored.map((element, i) => {
-                    return m(miminizedWindow, { content: element, idx: i })
-                })
-            ])
-        ])
-    }
-}
-
-
 
 const miminizedWindow = {
     view: function (vnode) {
@@ -77,6 +45,9 @@ const miminizedWindow = {
 }
 
 const nonModalWindow = {
+    oncreate: (vnode)=> {
+        vnode.attrs.content.setPosition(vnode.dom.offsetLeft, vnode.dom.offsetTop)
+    },
     view: function (vnode) {
         return m("div", { "class": "absolute -translate-x-6 translate-y-6", "style": `z-index: ${vnode.attrs.idx}; top: ${20 * vnode.attrs.idx}px; right: ${20 * vnode.attrs.idx}px` }, [
             m("div", { "class": "w-screen max-w-xl border border-gray-300 border-opacity-75 bg-white rounded-lg shadow-xl overflow-hidden" }, [
@@ -107,7 +78,28 @@ const nonModalWindow = {
 
 const initialize = (p) => {
     portals.stacked.push(p)
-    m.mount(document.getElementById("portals"), topLevel)
 }
 
-m.render(document.getElementById("content"), button())
+const App = {
+    view: function (vnode) {
+        return m("div", {"class": "h-full w-full"}, [
+            m("div", {id: "portals", "class": "absolute left-0 top-0 w-full"}, [
+                portals.stacked.map((element, i) => {
+                    return m(nonModalWindow, { content: element, idx: i })
+                })
+            ]),
+            m("div", {id: "anchors", "class": "absolute left-0 bottom-0 w-full"}, [
+                m("div", { "class": "p-4 flex items-center space-x-4" }, [
+                    portals.anchored.map((element, i) => {
+                        return m(miminizedWindow, { content: element, idx: i })
+                    })
+                ])
+            ]),
+            m("div", {"class": "min-h-full w-full min-w-full flex items-center justify-center"}, [
+                button()
+            ])
+        ])
+    }
+}
+
+m.mount(document.getElementById("container"), App)
