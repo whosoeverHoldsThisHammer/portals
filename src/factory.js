@@ -2,7 +2,7 @@ function createPortal(id, title, content){
     let _id = id
     let _title = title
     let _content = content
-    let _isOpen = true
+    let _opened = true
     let _position = {
         x: 0,
         y: 0
@@ -18,11 +18,14 @@ function createPortal(id, title, content){
         getContent(){
             return _content
         },
-        isOpen(){
-            _isOpen = true
+        maximize(){
+            _opened = true
         },
         minimize(){
-            _isOpen = false
+            _opened = false
+        },
+        isOpen(){
+            return _opened
         },
         setPosition(x, y){
             _position = {
