@@ -6,7 +6,7 @@ const button = () => {
     return m("button", {
         "class": "rounded-md bg-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
         "type": "button",
-        onclick: () => initialize(createPortal(portals.length + 1, "Portal", "Portal content")
+        onclick: () => initialize(createPortal(portals.length + 1, "Portal", { Title: 'New Portal', Author: 'User1234' })
             )
     },
         "Open New Portal"
@@ -36,7 +36,7 @@ const nonModalPortal = {
     view: function (vnode) {
         return m("div", { "class": "absolute -translate-x-6 translate-y-6", "style": `z-index: ${vnode.attrs.portal.getId()}; top: ${20 * vnode.attrs.portal.getId()}px; right: ${20 * vnode.attrs.portal.getId()}px` }, [
             m("div", { "class": "w-screen max-w-xl border border-gray-300 border-opacity-75 bg-white rounded-lg shadow-xl overflow-hidden" }, [
-                m("div", { "class": "bg-gray-100 px-4 py-4 sm:px-6" },
+                m("div", { "class": "bg-gray-100 px-4 py-4 sm:px-6 cursor-move" },
                     [
                         m("div", { "class": "flex items-center justify-between" },
                             [
@@ -55,7 +55,7 @@ const nonModalPortal = {
                         ),
                     ]
                 ),
-                m("div", { "class": "p-4" }, "{Title: 'New Portal'}")
+                m("pre", { "class": "p-4" }, JSON.stringify(vnode.attrs.portal.getContent(), undefined, 4))
             ])
         ])
     }
