@@ -18,6 +18,11 @@ let movingPortal = createPortal(-1, "*", {})
 const move = (e)=> {
     movingPortal.setPosition(e.clientX, e.clientY)
     console.log(movingPortal.getPosition())
+    m.redraw()
+}
+const stopMoving = (e)=> {
+    window.removeEventListener("mousemove", move)
+    movingPortal = createPortal(-1, "*", {})
 }
 
 const miminizedPortalTile = {
@@ -39,9 +44,10 @@ const miminizedPortalTile = {
 const nonModalPortal = {
     oncreate: (vnode) => {
         vnode.attrs.portal.setPosition(vnode.dom.offsetLeft, vnode.dom.offsetTop)
+        console.log()
     },
     view: function (vnode) {
-        return m("div", { "class": "absolute -translate-x-6 translate-y-6", "style": `z-index: ${vnode.attrs.portal.getId()}; top: ${20 * vnode.attrs.portal.getId()}px; right: ${20 * vnode.attrs.portal.getId()}px` }, [
+        return m("div", { "class": "fixed -translate-x-6 translate-y-6", "style": `z-index: ${vnode.attrs.portal.getId()}; top: ${vnode.attrs.portal.getPosition().y - 48}px; left: ${vnode.attrs.portal.getPosition().x - 48}px` }, [
             m("div", { "class": "w-screen max-w-xl border border-gray-300 border-opacity-75 bg-white rounded-lg shadow-xl overflow-hidden" }, [
                 m("div", {
                     "class": "bg-gray-100 px-4 py-4 sm:px-6 cursor-move", onmousedown: (e) => {
@@ -49,9 +55,6 @@ const nonModalPortal = {
                         movingPortal = vnode.attrs.portal
                         window.addEventListener("mousemove", move)
                     }, onmouseup: (e)=> {
-                        window.removeEventListener("mousemove", move)
-                        movingPortal = createPortal(-1, "*", {})
-                    }, onmouseleave: (e)=> {
                         window.removeEventListener("mousemove", move)
                         movingPortal = createPortal(-1, "*", {})
                     }
