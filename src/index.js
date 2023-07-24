@@ -13,16 +13,11 @@ const button = () => {
     )
 }
 
-
+let startPosition
 let movingPortal = createPortal(-1, "*", {})
 const move = (e)=> {
-    movingPortal.setPosition(e.clientX, e.clientY)
-    console.log(movingPortal.getPosition())
+    movingPortal.setPosition(e.clientX+startPosition, e.clientY-48)
     m.redraw()
-}
-const stopMoving = (e)=> {
-    window.removeEventListener("mousemove", move)
-    movingPortal = createPortal(-1, "*", {})
 }
 
 const miminizedPortalTile = {
@@ -42,16 +37,20 @@ const miminizedPortalTile = {
 }
 
 const nonModalPortal = {
-    oncreate: (vnode) => {
-        vnode.attrs.portal.setPosition(vnode.dom.offsetLeft, vnode.dom.offsetTop)
-        console.log()
-    },
     view: function (vnode) {
-        return m("div", { "class": "fixed -translate-x-6 translate-y-6", "style": `z-index: ${vnode.attrs.portal.getId()}; top: ${vnode.attrs.portal.getPosition().y - 48}px; left: ${vnode.attrs.portal.getPosition().x - 48}px` }, [
+        return m("div", { "class": "fixed -translate-x-6 translate-y-6",
+        "style":
+        vnode.attrs.portal.getPosition().x === 0 && vnode.attrs.portal.getPosition().y === 0
+        ?
+        `z-index: ${vnode.attrs.portal.getId()}; top: ${0}px; right: ${0}px`
+        :
+        `z-index: ${vnode.attrs.portal.getId()}; top: ${vnode.attrs.portal.getPosition().y}px; left: ${vnode.attrs.portal.getPosition().x}px`
+        }, [
             m("div", { "class": "w-screen max-w-xl border border-gray-300 border-opacity-75 bg-white rounded-lg shadow-xl overflow-hidden" }, [
                 m("div", {
                     "class": "bg-gray-100 px-4 py-4 sm:px-6 cursor-move", onmousedown: (e) => {
                         e.preventDefault()
+                        startPosition = e.target.getBoundingClientRect().x - e.clientX
                         movingPortal = vnode.attrs.portal
                         window.addEventListener("mousemove", move)
                     }, onmouseup: (e)=> {
