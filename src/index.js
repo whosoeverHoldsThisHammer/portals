@@ -6,7 +6,7 @@ const button = () => {
     return m("button", {
         "class": "rounded-md bg-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
         "type": "button",
-        onclick: () => initialize(createPortal(portals.length + 1, "Portal", { Title: 'New Portal', Author: 'User1234' })
+        onclick: () => initialize(createPortal("Portal", { Title: 'New Portal', Author: 'User1234' })
         )
     },
         "Open New Portal"
@@ -14,7 +14,7 @@ const button = () => {
 }
 
 let startPosition
-let movingPortal = createPortal(-1, "*", {})
+let movingPortal = createPortal("*", {})
 const move = (e)=> {
     movingPortal.setPosition(e.clientX+startPosition, e.clientY-48)
     m.redraw()
