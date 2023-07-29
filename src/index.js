@@ -14,7 +14,6 @@ const button = () => {
     )
 }
 
-let startPosition
 let movingPortal = createPortal("*", {})
 const move = (e)=> {
     movingPortal.setPosition(movingPortal.getPosition().x - e.movementX, movingPortal.getPosition().y + e.movementY)
@@ -51,7 +50,6 @@ const nonModalPortal = {
                 m("div", {
                     "class": "bg-gray-100 px-4 py-4 sm:px-6 cursor-move", onmousedown: (e) => {
                         e.preventDefault()
-                        startPosition = e.target.getBoundingClientRect().x - e.clientX
                         movingPortal = vnode.attrs.portal
                         window.addEventListener("mousemove", move)
                     }, onmouseup: (e)=> {
