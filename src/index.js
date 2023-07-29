@@ -1,22 +1,22 @@
 var m = require("mithril")
-import createPortal from "./factory"
+import createPortal from "./factory.js"
 import { portals, initialize, maximize, minimize, closePortal } from "./portals"
 
 const button = () => {
     return m("button", {
         "class": "rounded-md bg-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
         "type": "button",
-        onclick: () => initialize(createPortal("Portal", { Title: 'New Portal', Author: 'User1234' })
-        )
+        onclick: () => {
+            initialize(createPortal("Portal", { Title: 'New Portal', Author: 'User1234' }))
+        }
     },
         "Open New Portal"
     )
 }
 
-let startPosition
 let movingPortal = createPortal("*", {})
 const move = (e)=> {
-    movingPortal.setPosition(e.clientX+startPosition, e.clientY-48)
+    movingPortal.setPosition(movingPortal.getPosition().x - e.movementX, movingPortal.getPosition().y + e.movementY)
     m.redraw()
 }
 
@@ -44,13 +44,12 @@ const nonModalPortal = {
         ?
         `z-index: ${vnode.attrs.portal.getId()}; top: ${0}px; right: ${0}px`
         :
-        `z-index: ${vnode.attrs.portal.getId()}; top: ${vnode.attrs.portal.getPosition().y}px; left: ${vnode.attrs.portal.getPosition().x}px`
+        `z-index: ${vnode.attrs.portal.getId()}; top: ${vnode.attrs.portal.getPosition().y}px; right: ${vnode.attrs.portal.getPosition().x}px`
         }, [
             m("div", { "class": "w-screen max-w-xl border border-gray-300 border-opacity-75 bg-white rounded-lg shadow-xl overflow-hidden" }, [
                 m("div", {
                     "class": "bg-gray-100 px-4 py-4 sm:px-6 cursor-move", onmousedown: (e) => {
                         e.preventDefault()
-                        startPosition = e.target.getBoundingClientRect().x - e.clientX
                         movingPortal = vnode.attrs.portal
                         window.addEventListener("mousemove", move)
                     }, onmouseup: (e)=> {
