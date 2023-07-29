@@ -1,5 +1,5 @@
-function createPortal(id, title, content){
-    let _id = id
+function createPortal(title, content){
+    let _id = crypto.randomUUID()
     let _title = title
     let _content = content
     let _opened = true
